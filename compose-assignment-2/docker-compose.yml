@@ -1,1 +1,34 @@
-# create your drupal and postgres config here, based off the last assignment
+version: '2'
+
+services:
+      drupal:
+        image: custom-drupal
+        build:
+          context: .
+          dockerfile: Dockerfile
+        container_name: drupal-test
+        ports:
+            - "8080:80"
+        volumes:
+            - drupal-modules:/var/www/html/modules
+            - drupal-profiles:/var/www/html/profiles
+            - drupal-themes:/var/www/html/themes
+            - drupal-sites:/var/www/html/sites
+        environment:
+          - POSTGRES_PASSWORD=example
+          - POSTGRES_DB=drupal
+          - POSTGRES_USER=drupal-admin
+        restart: always
+      postgres:
+        image: postgres:9.6
+        container_name: dbhost-postgres
+        environment:
+           - POSTGRES_PASSWORD=example
+           - POSTGRES_DB=drupal
+           - POSTGRES_USER=drupal-admin
+        restart: always
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-themes:
+  drupal-sites:
