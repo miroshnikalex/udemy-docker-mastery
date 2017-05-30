@@ -16,9 +16,22 @@
 
 # Instructions from the app developer
 # - you should use the 'node' official image, with the alpine 6.x branch
+
+FROM node:6.10-alpine
+
 # - this app listens on port 3000, but the container should launch on port 80
-  #  so it will respond to http://localhost:80 on your computer
+#   so it will respond to http://localhost:80 on your computer
 # - then it should use alpine package manager to install tini: 'apk add --update tini'
+
+RUN apk add --update tini 
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . .
+RUN npm install && npm cache clean
+CMD ["/sbin/tini", "--", "node", "./bin/www"]
+
+EXPOSE 3000
+
 # - then it should create directory /usr/src/app for app files with 'mkdir -p /usr/src/app'
 # - Node uses a "package manager", so it needs to copy in package.json file
 # - then it needs to run 'npm install' to install dependencies from that file
